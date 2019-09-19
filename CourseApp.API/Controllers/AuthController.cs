@@ -18,7 +18,6 @@ namespace CourseApp.API.Controllers
     {
         private readonly IAuthRepository _repo;
         private readonly IConfiguration _config;
-
         public AuthController(IAuthRepository repo, IConfiguration config)
         {
             _config = config;
@@ -26,18 +25,19 @@ namespace CourseApp.API.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(UserFroRegisterDto userFroRegisterDto)
+        public async Task<IActionResult> Register(UserFroRegisterDto userForRegisterDto)
         {
-            userFroRegisterDto.Username = userFroRegisterDto.Username.ToLower();
+            userForRegisterDto.Username = userForRegisterDto.Username.ToLower();
 
-            if (await _repo.UserExist(userFroRegisterDto.Username))
-                return BadRequest("Username already ex");
+            if (await _repo.UserExists(userForRegisterDto.Username))
+                return BadRequest("Username already exists");
 
             var userToCreate = new User
             {
-                UserName = userFroRegisterDto.Username
+                Username = userForRegisterDto.Username
             };
-            var createdUser = await _repo.Register(userToCreate, userFroRegisterDto.Password);
+
+            var createdUser = await _repo.Register(userToCreate, userForRegisterDto.Password);
 
             return StatusCode(201);
         }
@@ -45,17 +45,17 @@ namespace CourseApp.API.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(UserForLoginDto userForLoginDto)
         {
-            var userFromRepo = await _repo.Login(userForLoginDto.Username.ToLower(), userForLoginDto.Password);
+            var userFromRepo = await _repo.Login(userForLoginDto.Username, userForLoginDto.Password);
 
-            if(userFromRepo == null)
+            if (userFromRepo == null)
                 return Unauthorized();
 
             var claims = new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, userFromRepo.Id.ToString()),
-                new Claim(ClaimTypes.Name, userFromRepo.UserName)
+                new Claim(ClaimTypes.Name, userFromRepo.Username)
             };
-            
+
             var key = new SymmetricSecurityKey(Encoding.UTF8
                 .GetBytes(_config.GetSection("AppSettings:Token").Value));
 
@@ -72,7 +72,8 @@ namespace CourseApp.API.Controllers
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
-            return Ok(new {
+            return Ok(new
+            {
                 token = tokenHandler.WriteToken(token)
             });
         }

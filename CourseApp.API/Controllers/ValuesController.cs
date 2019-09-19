@@ -19,8 +19,8 @@ namespace CourseApp.API.Controllers
         public ValuesController(DataContex context)
         {
             _context = context;
-
         }
+
         // GET api/values
         [AllowAnonymous]
         [HttpGet]
@@ -36,10 +36,11 @@ namespace CourseApp.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetValue(int id)
         {
-            var value = await _context.Values.FirstOrDefaultAsync(x => x.ID == id);
-            
+            var value = await _context.Values.FirstOrDefaultAsync(x => x.Id == id);
+
             return Ok(value);
         }
+
         // POST api/values
         [HttpPost]
         public void Post([FromBody] string value)

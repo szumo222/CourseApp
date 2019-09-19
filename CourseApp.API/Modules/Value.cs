@@ -2,7 +2,7 @@ namespace CourseApp.API.Modules
 {
     public class Value
     {
-        public int ID { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; }
     }
 }

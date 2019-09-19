@@ -9,10 +9,10 @@ import { Router } from '@angular/router';
   styleUrls: ['./nav.component.css']
 })
 export class NavComponent implements OnInit {
-
   model: any = {};
 
-  constructor(public authService: AuthService, private alertify: AlertifyService, private router: Router) { }
+  constructor(public authService: AuthService, private alertify: AlertifyService,
+      private router: Router) { }
 
   ngOnInit() {
   }
@@ -28,12 +28,13 @@ export class NavComponent implements OnInit {
   }
 
   loggedIn() {
-    return this.authService.loggedIn();
+    const token = localStorage.getItem('token');
+    return !!token;
   }
 
   logout() {
     localStorage.removeItem('token');
-    this.alertify.message('Log out successfully');
-    this.router.navigate(['home']);
+    this.alertify.message('logged out');
+    this.router.navigate(['/home']);
   }
 }
