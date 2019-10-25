@@ -4,11 +4,13 @@ using System.Threading.Tasks;
 using AutoMapper;
 using CourseApp.API.Data;
 using CourseApp.API.Dtos;
+using CourseApp.API.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CourseApp.API.Controllers
 {
+    [ServiceFilter(typeof(LogUsersActivity))]
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
